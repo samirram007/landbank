@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage":"https://samirram007.github.io/landbank/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
