@@ -1,6 +1,6 @@
 const App = () => {
   return (
-    <div>
+    <div className="App flex bg-green-500">
 this is root
     </div>
   )
