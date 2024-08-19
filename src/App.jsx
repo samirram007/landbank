@@ -36,6 +36,7 @@ function App() {
       <Routes>
         <Route
           index
+
           element={
             <>
               <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />

@@ -10,7 +10,7 @@ import './css/style.css';
 // import './index.css';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Router>
+    <Router  basename="/landbank">
       <App />
     </Router>
   </StrictMode>,

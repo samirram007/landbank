@@ -1,13 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import map05 from '../../images/map/map05.png';
 
 const MapTwo = () => {
   const mapRef = useRef(null);
   const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const handleWheel = (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Stop the event from propagating to the window
     let newScale = scale + e.deltaY * -0.01;
 
     // Restrict scale
@@ -20,22 +22,68 @@ const MapTwo = () => {
     setScale(newScale);
   };
 
+  const handleMouseDown = (e) => {
+    setDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (dragging) {
+      const newX = e.clientX - dragStart.x;
+      const newY = e.clientY - dragStart.y;
+      setPosition({ x: newX, y: newY });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragging(false);
+  };
+
+  useEffect(() => {
+    const mapElement = mapRef.current;
+    if (mapElement) {
+      mapElement.addEventListener('wheel', handleWheel, { passive: false });
+      mapElement.addEventListener('mousemove', handleMouseMove);
+      mapElement.addEventListener('mousedown', handleMouseDown);
+      mapElement.addEventListener('mouseup', handleMouseUp);
+      mapElement.addEventListener('mouseleave', handleMouseUp);
+
+      // Clean up the event listeners on component unmount
+      return () => {
+        mapElement.removeEventListener('wheel', handleWheel);
+        mapElement.removeEventListener('mousemove', handleMouseMove);
+        mapElement.removeEventListener('mousedown', handleMouseDown);
+        mapElement.removeEventListener('mouseup', handleMouseUp);
+        mapElement.removeEventListener('mouseleave', handleMouseUp);
+      };
+    }
+  }, [dragging, scale]);
+
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-7">
       <h4 className="mb-2 text-xl font-semibold text-black dark:text-white">
-        Plot-005 Label
+        Plot(005) Label
       </h4>
       <div
         id="mapTwo"
         className="mapOne map-btn h-90 overflow-hidden"
         ref={mapRef}
-        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
       >
         <img
           src={map05}
           alt=""
-          className="h-full w-full transform"
-          style={{ transform: `scale(${scale})` }}
+          className="transform"
+          style={{
+            transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+            cursor: dragging ? 'grabbing' : 'grab',
+            transition: dragging ? 'none' : 'transform 0.2s ease-out',
+          }}
         />
       </div>
     </div>
