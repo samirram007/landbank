@@ -129,7 +129,7 @@ const ChartThree = () => {
                 <span className={`mr-2 block h-3 w-full max-w-3 rounded-full bg-[${options.colors[index]}]`}></span>
                 <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
                   <span> {label} </span>
-                  <span> 65% </span>
+                  <span> {state.series[index]}% </span>
                 </p>
               </div>
             </div>

@@ -14,13 +14,15 @@ const MapTwo = () => {
 
     // Restrict scale
     if (newScale < 0.5) {
-      newScale = 0.5;
-    } else if (newScale > 3) {
-      newScale = 3;
+      newScale = 1;
+      setPosition({ x: 0, y: 0 });
+    } else if (newScale > 10) {
+      newScale = 10;
     }
 
     setScale(newScale);
   };
+
 
   const handleMouseDown = (e) => {
     setDragging(true);
@@ -28,6 +30,9 @@ const MapTwo = () => {
       x: e.clientX - position.x,
       y: e.clientY - position.y,
     });
+    // Prevent default behavior to avoid text selection
+    e.preventDefault();
+
   };
 
   const handleMouseMove = (e) => {
@@ -46,7 +51,6 @@ const MapTwo = () => {
     const mapElement = mapRef.current;
     if (mapElement) {
       mapElement.addEventListener('wheel', handleWheel, { passive: false });
-      mapElement.addEventListener('mousemove', handleMouseMove);
       mapElement.addEventListener('mousedown', handleMouseDown);
       mapElement.addEventListener('mouseup', handleMouseUp);
       mapElement.addEventListener('mouseleave', handleMouseUp);
@@ -54,7 +58,6 @@ const MapTwo = () => {
       // Clean up the event listeners on component unmount
       return () => {
         mapElement.removeEventListener('wheel', handleWheel);
-        mapElement.removeEventListener('mousemove', handleMouseMove);
         mapElement.removeEventListener('mousedown', handleMouseDown);
         mapElement.removeEventListener('mouseup', handleMouseUp);
         mapElement.removeEventListener('mouseleave', handleMouseUp);
@@ -68,12 +71,12 @@ const MapTwo = () => {
         Plot(005) Label
       </h4>
       <div
-        id="mapTwo"
-        className="mapOne map-btn h-90 overflow-hidden"
         ref={mapRef}
+        className="mapOne map-btn h-90 overflow-hidden"
         onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
+        onMouseMove={dragging ? handleMouseMove : null}
         onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         <img
           src={map05}
