@@ -8,4 +8,6 @@ export default defineConfig({
     emptyOutDir: true,
   },
   plugins: [react()],
+  base: '/landbank/',
+
 })
